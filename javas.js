@@ -1,15 +1,67 @@
- // Using parentElement and insertBefore to add "Hello world" before "Item Lister"
- var headerTitle = document.getElementById("header-title");
- var helloText = document.createTextNode("Hello world ");
- headerTitle.parentElement.insertBefore(helloText, headerTitle);
+var form = document.getElementById('addForm');
+var itemList = document.getElementById('items');
+var filter = document.getElementById('filter');
 
- // Using lastElementChild and appendChild to add "Hello world" before "Item 1"
- var itemsList = document.getElementById("items");
- var item1 = itemsList.lastElementChild; // Select the last <li> element
- var helloText2 = document.createTextNode("Hello world ");
- itemsList.insertBefore(helloText2, item1);
+// Form submit event
+form.addEventListener('submit', addItem);
+// Delete event
+itemList.addEventListener('click', removeItem);
+// Filter event
+filter.addEventListener('keyup', filterItems);
 
- // Alternative way to add "Hello world" before "Item 1" using firstElementChild and insertBefore
- var item2 = itemsList.firstElementChild; // Select the first <li> element
- var helloText3 = document.createTextNode("Hello world ");
- itemsList.insertBefore(helloText3, item2);
+// Add item
+function addItem(e){
+  e.preventDefault();
+
+  // Get input value
+  var newItem = document.getElementById('item').value;
+
+  // Create new li element
+  var li = document.createElement('li');
+  // Add class
+  li.className = 'list-group-item';
+  // Add text node with input value
+  li.appendChild(document.createTextNode(newItem));
+
+  // Create del button element
+  var deleteBtn = document.createElement('button');
+
+  // Add classes to del button
+  deleteBtn.className = 'btn btn-danger btn-sm float-right delete';
+
+  // Append text node
+  deleteBtn.appendChild(document.createTextNode('X'));
+
+  // Append button to li
+  li.appendChild(deleteBtn);
+
+  // Append li to list
+  itemList.appendChild(li);
+}
+
+// Remove item
+function removeItem(e){
+  if(e.target.classList.contains('delete')){
+    if(confirm('Are You Sure?')){
+      var li = e.target.parentElement;
+      itemList.removeChild(li);
+    }
+  }
+}
+
+// Filter Items
+function filterItems(e){
+  // convert text to lowercase
+  var text = e.target.value.toLowerCase();
+  // Get lis
+  var items = itemList.getElementsByTagName('li');
+  // Convert to an array
+  Array.from(items).forEach(function(item){
+    var itemName = item.firstChild.textContent;
+    if(itemName.toLowerCase().indexOf(text) != -1){
+      item.style.display = 'block';
+    } else {
+      item.style.display = 'none';
+    }
+  });
+}
